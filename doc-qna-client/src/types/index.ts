@@ -1,0 +1,264 @@
+export interface IAuthResponse {
+  accessToken: string;
+  email: string;
+  expiresAt: string;
+  refreshToken: string;
+}
+
+export interface ILoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface IRegisterRequest {
+  email: string;
+  password: string;
+}
+
+export interface DocumentUploadResponse {
+  createdAt: string;
+  fileSizeBytes: number;
+  id: string;
+  originalFileName: string;
+  status: string;
+}
+
+export interface DocumentListResponse {
+  chunkCount: number;
+  createdAt: string;
+  fileSizeBytes: number;
+  id: string;
+  originalFileName: string;
+  status: string;
+}
+
+export interface SourceChunk {
+  chunkIndex: number;
+  citedSentences?: string[];
+  score: number;
+  text: string;
+}
+
+export interface AskRequest {
+  documentId: string;
+  language?: string;
+  question: string;
+}
+
+export interface AskResponse {
+  answer: string;
+  answerSource: "document" | "ai_fallback";
+  createdAt: string;
+  confidence?: ConfidenceScore;
+  fallbackReason?: string;
+  imageSources?: ImageSourceChunk[];
+  question: string;
+  sources: SourceChunk[];
+}
+
+export interface ChatHistoryItem {
+  answer: string;
+  createdAt: string;
+  documentId: string | null;
+  documentName: string | null;
+  id: string;
+  question: string;
+  sources: SourceChunk[];
+  answerSource: "document" | "ai_fallback";
+  fallbackReason?: string;
+}
+
+export interface ChatBubble {
+  answerSource?: "document" | "ai_fallback";
+  content: string;
+  createdAt: string;
+  confidence?: ConfidenceScore;
+  fallbackReason?: string;
+  id: string;
+  imageSources?: ImageSourceChunk[];
+  sources?: SourceChunk[];
+  type: "user" | "assistant";
+}
+
+export interface CollectionDocumentResponse {
+  addedAt: string;
+  chunkCount: number;
+  fileSizeBytes: number;
+  id: string;
+  originalFileName: string;
+  status: string;
+}
+
+export interface CollectionResponse {
+  createdAt: string;
+  description: string;
+  documentCount: number;
+  documents: CollectionDocumentResponse[];
+  id: string;
+  name: string;
+}
+
+export interface CreateCollectionRequest {
+  description: string;
+  name: string;
+}
+
+export interface AdminStats {
+  failedDocuments: number;
+  processingDocuments: number;
+  readyDocuments: number;
+  serverTime: string;
+  totalCollections: number;
+  totalConversations: number;
+  totalDocuments: number;
+  totalStorageBytes: number;
+  totalUsers: number;
+}
+
+export interface AdminUser {
+  collectionCount: number;
+  conversationCount: number;
+  createdAt: string;
+  documentCount: number;
+  email: string;
+  id: string;
+  lastActive: string | null;
+  totalStorageBytes: number;
+}
+
+export interface AdminDocument {
+  chunkCount: number;
+  createdAt: string;
+  fileSizeBytes: number;
+  id: string;
+  originalFileName: string;
+  status: string;
+  userEmail: string;
+  userId: string;
+}
+
+export interface AdminConversation {
+  answer: string;
+  createdAt: string;
+  documentName: string | null;
+  id: string;
+  question: string;
+  sourceCount: number;
+  userEmail: string;
+}
+
+export interface AskCollectionRequest {
+  collectionId: string;
+  question: string;
+}
+
+export interface CollectionSourceChunk {
+  chunkIndex: number;
+  documentId: string;
+  documentName: string;
+  score: number;
+  text: string;
+}
+
+export interface CollectionAskResponse {
+  answer: string;
+  createdAt: string;
+  documentsSearched: number;
+  question: string;
+  sources: CollectionSourceChunk[];
+}
+
+export interface DailyUsage {
+  date: string;
+  questions: number;
+}
+
+export interface TopDocument {
+  documentId: string;
+  documentName: string;
+  questionCount: number;
+}
+
+export interface UserAnalytics {
+  aiFallbackAnswers: number;
+  dailyActivity: DailyUsage[];
+  documentAnswers: number;
+  questionsThisMonth: number;
+  questionsThisWeek: number;
+  readyDocuments: number;
+  topDocuments: TopDocument[];
+  totalDocuments: number;
+  totalQuestions: number;
+  totalStorageBytes: number;
+}
+
+export interface ImageSourceChunk {
+  base64Data: string;
+  description: string;
+  imageIndex: number;
+  pageNumber: number;
+  score: number;
+}
+
+// Summarization
+export interface SummarizeRequest {
+  documentId: string;
+  style: "concise" | "detailed" | "bullet_points" | "executive";
+}
+
+export interface SummarizeResponse {
+  chunksAnalyzed: number;
+  createdAt: string;
+  documentId: string;
+  documentName: string;
+  style: string;
+  summary: string;
+}
+
+// Suggested Questions
+export interface SuggestedQuestion {
+  category: string;
+  question: string;
+}
+
+export interface SuggestQuestionsResponse {
+  documentId: string;
+  documentName: string;
+  questions: SuggestedQuestion[];
+}
+
+// Confidence
+export interface ConfidenceScore {
+  explanation: string;
+  level: "High" | "Medium" | "Low";
+  overall: number;
+}
+
+// Share
+export interface CreateShareRequest {
+  documentId: string;
+  expiryDays: number;
+  messages: ShareChatMessage[];
+  title: string;
+}
+
+export interface ShareChatMessage {
+  content: string;
+  sources?: SourceChunk[];
+  type: "user" | "assistant";
+}
+
+export interface ShareResponse {
+  expiresAt: string;
+  shareToken: string;
+  shareUrl: string;
+}
+
+export interface SharedChatResponse {
+  createdAt: string;
+  documentName: string;
+  expiresAt: string;
+  messages: ShareChatMessage[];
+  title: string;
+  viewCount: number;
+}

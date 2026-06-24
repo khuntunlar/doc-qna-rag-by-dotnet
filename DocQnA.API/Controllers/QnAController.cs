@@ -1,0 +1,182 @@
+﻿using DocQnA.API.DTOs;
+using DocQnA.API.Extensions;
+using DocQnA.API.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace DocQnA.API.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
+public class QnAController : ControllerBase
+{
+    private readonly QnAService _qnAService;
+
+    public QnAController(QnAService qnAService)
+    {
+        _qnAService = qnAService;
+    }
+
+    /// <summary>Ask a question about a document</summary>
+    [HttpPost("ask")]
+    public async Task<IActionResult> Ask([FromBody] AskRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Question))
+            return BadRequest(new { message = "Question cannot be empty." });
+
+        if (request.DocumentId == Guid.Empty)
+            return BadRequest(new { message = "DocumentId is required." });
+
+        try
+        {
+            var userId = User.GetUserId();
+            var response = await _qnAService.AskAsync(request, userId);
+            return Ok(response);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    /// <summary>Ask a question with streaming response via SSE</summary>
+    [HttpGet("ask-stream")]
+    public async Task AskStream(
+        [FromQuery] string question,
+        [FromQuery] Guid documentId,
+        [FromQuery] string language = "en")
+    {
+        if (string.IsNullOrWhiteSpace(question) || documentId == Guid.Empty)
+        {
+            Response.StatusCode = 400;
+            return;
+        }
+
+        // ── Set SSE headers ───────────────────────────────────────
+        Response.Headers["Content-Type"] = "text/event-stream";
+        Response.Headers["Cache-Control"] = "no-cache";
+
+        var userId = User.GetUserId();
+
+        await _qnAService.AskStreamAsync(
+            question, documentId, language, userId, Response);
+    }
+
+    /// <summary>Get chat history for current user</summary>
+    [HttpGet("history")]
+    public async Task<IActionResult> GetHistory(
+        [FromQuery] int limit = 20)
+    {
+        var userId = User.GetUserId();
+        var history = await _qnAService.GetHistoryAsync(userId, limit);
+        return Ok(history);
+    }
+
+    /// <summary>Clear all chat history</summary>
+    [HttpDelete("history")]
+    public async Task<IActionResult> ClearHistory()
+    {
+        var userId = User.GetUserId();
+        await _qnAService.ClearHistoryAsync(userId);
+        return NoContent();
+    }
+
+    /// <summary>Delete a single chat message</summary>
+    [HttpDelete("history/{id:guid}")]
+    public async Task<IActionResult> DeleteOne(Guid id)
+    {
+        var userId = User.GetUserId();
+        await _qnAService.DeleteOneAsync(id, userId);
+        return NoContent();
+    }
+
+    /// <summary>Ask a question across all docs in a collection</summary>
+    [HttpPost("ask-collection")]
+    public async Task<IActionResult> AskCollection(
+        [FromBody] AskCollectionRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Question))
+            return BadRequest(new { message = "Question is required." });
+
+        if (request.CollectionId == Guid.Empty)
+            return BadRequest(new { message = "CollectionId is required." });
+
+        try
+        {
+            var userId = User.GetUserId();
+            var response = await _qnAService
+                .AskCollectionAsync(request, userId);
+            return Ok(response);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
+
+    [HttpGet("analytics")]
+    public async Task<IActionResult> GetAnalytics()
+    {
+        var userId = User.GetUserId();
+        var analytics = await _qnAService.GetAnalyticsAsync(userId);
+        return Ok(analytics);
+    }
+
+    /// <summary>Generate a summary of a document</summary>
+    [HttpPost("summarize")]
+    public async Task<IActionResult> Summarize(
+        [FromBody] SummarizeRequest request)
+    {
+        if (request.DocumentId == Guid.Empty)
+            return BadRequest(
+                new { message = "DocumentId is required." });
+
+        try
+        {
+            var userId = User.GetUserId();
+            var response = await _qnAService
+                .SummarizeAsync(request, userId);
+            return Ok(response);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    /// <summary>Generate suggested questions for a document</summary>
+    [HttpPost("suggest-questions")]
+    [Authorize]
+    public async Task<IActionResult> SuggestQuestions(
+        [FromBody] SuggestQuestionsRequest request)
+    {
+        if (request.DocumentId == Guid.Empty)
+            return BadRequest(
+                new { message = "DocumentId is required." });
+
+        try
+        {
+            var userId = User.GetUserId();
+            var response = await _qnAService
+                .SuggestQuestionsAsync(request, userId);
+            return Ok(response);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+}
