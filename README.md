@@ -114,7 +114,7 @@
 ### 1. Clone the Repository
 
 ```bash
-cd doc-qna-rag
+cd doc-qna-rag-by-dotnet
 ```
 
 ### 2. Start Docker Containers
