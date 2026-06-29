@@ -2,19 +2,6 @@
 
 > Ask natural language questions over your uploaded PDF documents using AI — powered by Retrieval-Augmented Generation (RAG).
 
-![Status](https://img.shields.io/badge/Version-V2.0%20🚀-blue)
-![Status](https://img.shields.io/badge/Status-Live%20🟢-brightgreen)
-![Vercel](https://img.shields.io/badge/Frontend-Vercel-black)
-![Render](https://img.shields.io/badge/API-Render-46E3B7)
-![.NET](https://img.shields.io/badge/.NET-8.0-purple)
-![React](https://img.shields.io/badge/React-18-61DAFB)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
-![MUI](https://img.shields.io/badge/MUI-5.x-007FFF)
-![License](https://img.shields.io/badge/License-MIT-green)
-![CI](https://github.com/valc5083/doc-qna-rag/actions/workflows/ci.yml/badge.svg)
-![Tests](https://img.shields.io/badge/Tests-37%20passing-brightgreen)
-![Docker](https://img.shields.io/badge/Docker-ready-2496ED)
-
 ---
 
 ## ✨ Features
@@ -45,41 +32,6 @@
 
 ---
 
-## 🖼️ Screenshots
-
-### Login
-
-![Login Page](./screenshots/login.png)
-
-### Register
-
-![Register Page](./screenshots/register.png)
-
-### Dashboard — Document Upload & Management
-
-![Dashboard](./screenshots/dashboard.png)
-
-### Chat — AI Q&A with Streaming + Source Attribution
-
-![Chat](./screenshots/chat.png)
-
-### Chat — AI History
-
-![Chat](./screenshots/chathistory.png)
-
-### Chat History with Stats
-
-![History](./screenshots/history.png)
-
-### Collections Management
-
-![Collections](./screenshots/collections.png)
-
-### Admin Dashboard
-
-![Admin](./screenshots/admin.png)
-
----
 
 
 
@@ -159,24 +111,9 @@
 
 ---
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-| Tool               | Version | Download                                                 |
-| ------------------ | ------- | -------------------------------------------------------- |
-| Node.js            | 20 LTS  | [nodejs.org](https://nodejs.org)                         |
-| .NET SDK           | 8.0     | [dot.net](https://dot.net)                               |
-| Docker Desktop     | Latest  | [docker.com](https://docker.com/products/docker-desktop) |
-| Git                | Latest  | [git-scm.com](https://git-scm.com)                       |
-| NVIDIA NIM API Key | —       | [build.nvidia.com](https://build.nvidia.com)             |
-
----
-
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/valc5083/doc-qna-rag.git
 cd doc-qna-rag
 ```
 
@@ -394,40 +331,7 @@ docker logs docqna_qdrant
 
 ---
 
-## 💰 Running Cost: $0
 
-| Service                                    | Cost      |
-| ------------------------------------------ | --------- |
-| NVIDIA NIM Embeddings (`nv-embedqa-e5-v5`) | Free tier |
-| NVIDIA NIM LLM (`llama-4-maverick`)        | Free tier |
-| Qdrant (self-hosted Docker)                | Free      |
-| PostgreSQL (self-hosted Docker)            | Free      |
-| Vercel (frontend hosting)                  | Free      |
-| Railway (API hosting)                      | Free tier |
-| **Total**                                  | **$0**    |
-
----
-
-## 🎯 Key Technical Decisions
-
-**Why RAG over fine-tuning?**
-RAG is cheaper, keeps answers grounded in the document, and works with any new document without retraining. Fine-tuning bakes knowledge in statically.
-
-**Why NVIDIA NIM over OpenAI?**
-NVIDIA NIM offers free tier access to state-of-the-art models (Llama 4, nv-embedqa) with an OpenAI-compatible API. Zero cost for development and demos.
-
-**Why Qdrant over pgvector?**
-Qdrant is purpose-built for vector search with gRPC, filtering, and a great dashboard. pgvector is simpler but slower at scale.
-
-**Why SSE over WebSockets for streaming?**
-SSE is simpler (HTTP GET, no handshake), natively supported by browsers via `EventSource`, and sufficient for one-way server-to-client streaming.
-
-**Why MUI `styled()` over `sx` prop?**
-Styled components keep presentation logic in dedicated files, are reusable across pages, and make the code cleaner and easier to maintain.
-
----
-
-## 🚀 V2.0 Improvements
 
 | Feature | Impact |
 |--------|--------|
@@ -438,13 +342,6 @@ Styled components keep presentation logic in dedicated files, are reusable acros
 | Export Chat | Shareable outputs |
 
 ---
-
-### 🔮 Coming Next
-
-- Redis semantic caching
-- Answer highlighting inside PDFs
-- Advanced analytics dashboard
-
 
 
 🚀 Focused on building production-grade AI systems using RAG, vector search, and modern full-stack architecture.
